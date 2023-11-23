@@ -1,6 +1,8 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
+import torch
+
 from protogpt.datasets import InMemoryTextDataset, TrainValDataset
 from protogpt.tokenizer import CharacterLevelTokenizer
 

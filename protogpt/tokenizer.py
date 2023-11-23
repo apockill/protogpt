@@ -1,15 +1,17 @@
 from abc import ABC, abstractmethod
 
-TOKENS = list[int]
+import torch
+
+TOKENS_TYPE = torch.Tensor
 
 
 class BaseTokenizer(ABC):
     @abstractmethod
-    def decode(self, tokens: TOKENS) -> str:
+    def decode(self, tokens: TOKENS_TYPE) -> str:
         pass
 
     @abstractmethod
-    def encode(self, text: str) -> TOKENS:
+    def encode(self, text: str) -> TOKENS_TYPE:
         pass
 
     @classmethod
@@ -34,11 +36,11 @@ class CharacterLevelTokenizer(BaseTokenizer):
         self._mapping_to_text = {v: k for k, v in mapping.items()}
         assert len(self._mapping_to_tokens) == len(self._mapping_to_text)
 
-    def decode(self, tokens: TOKENS) -> str:
+    def decode(self, tokens: TOKENS_TYPE) -> str:
         return "".join((self._mapping_to_text[t] for t in tokens))
 
-    def encode(self, text: str) -> TOKENS:
-        return [self._mapping_to_tokens[c] for c in text]
+    def encode(self, text: str) -> TOKENS_TYPE:
+        return torch.tensor([self._mapping_to_tokens[c] for c in text], dtype=torch.int)
 
     @classmethod
     def create_from_corpus(cls, text: str) -> "CharacterLevelTokenizer":
