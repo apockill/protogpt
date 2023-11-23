@@ -1,0 +1,16 @@
+{
+  "template": "git@github.com:UrbanMachine/cookiecutter-python-template.git",
+  "commit": "ee072a5662da67e0434195eddd706f27ced87228",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "email": "apocthiel@gmail.com",
+      "github_org": "apockill",
+      "project_name": "protogpt",
+      "description": "Building GPT from scratch (thanks Andrej Karpathy)",
+      "version": "0.1.0",
+      "_template": "git@github.com:UrbanMachine/cookiecutter-python-template.git"
+    }
+  },
+  "directory": null
+}
