@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
+from protogpt.tokenizer import BaseTokenizer
 
-class TextDataset(ABC):
+
+class BaseTextDataset(ABC):
     @abstractmethod
     def __len__(self) -> int:
         """The number of characters in the dataset"""
@@ -12,9 +14,10 @@ class TextDataset(ABC):
         """Return the unique characters in this dataset"""
 
 
-class InMemoryTextDataset(TextDataset):
-    def __init__(self, text: str):
+class InMemoryTextDataset(BaseTextDataset):
+    def __init__(self, text: str, tokenizer: BaseTokenizer):
         self._text = text
+        self.tokenizer = tokenizer
 
     def __len__(self) -> int:
         return len(self._text)
@@ -22,3 +25,9 @@ class InMemoryTextDataset(TextDataset):
     @property
     def unique_characters(self) -> set[str]:
         return set(self._text)
+
+
+class TrainValDataset:
+    def __init__(self, train: BaseTextDataset, val: BaseTextDataset):
+        self.train = train
+        self.val = val
