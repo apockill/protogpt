@@ -1,5 +1,6 @@
 # protogpt
-Building GPT from scratch (thanks Andrej Karpathy)
+
+A for-fun GPT prototype, heavily inspired by [Andrej Karpathy's tutorial](https://www.youtube.com/watch?v=kCc8FmEb1nY), with my own spin on the architecture.
 _________________
 
 [![PyPI version](https://badge.fury.io/py/protogpt.svg)](http://badge.fury.io/py/protogpt)
@@ -10,14 +11,16 @@ _________________
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://timothycrosley.github.io/isort/)
 _________________
 
-[Read Latest Documentation](https://apockill.github.io/protogpt/) - [Browse GitHub Code Repository](https://github.com/apockill/protogpt/)
-_________________
-
 ## Development
 
 ### Installing python dependencies
 ```shell
 poetry install
+```
+
+### Running the code
+```shell
+poetry run train_gpt --datasets/tiny_shakespear.txt
 ```
 
 ### Running Tests
