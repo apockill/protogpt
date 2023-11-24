@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Iterator
 
 import torch
 
@@ -6,6 +7,11 @@ from protogpt.tokenizer import BaseTokenizer
 
 
 class BaseTextDataset(ABC):
+    name = "UnnamedDataset"
+
+    def __repr__(self) -> str:
+        return f"{self.name}(n={len(self)})"
+
     @abstractmethod
     def __len__(self) -> int:
         """The number of characters in the dataset"""
@@ -52,7 +58,14 @@ class InMemoryTextDataset(BaseTextDataset):
         return x, y
 
 
-class TrainValDataset:
+class DatasetSplits:
     def __init__(self, train: BaseTextDataset, val: BaseTextDataset):
         self.train = train
         self.val = val
+
+        train.name = "Train"
+        val.name = "Val"
+
+    def __iter__(self) -> Iterator[BaseTextDataset]:
+        yield self.train
+        yield self.val

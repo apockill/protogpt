@@ -6,7 +6,7 @@ from argdantic import ArgParser
 from pydantic import BaseModel
 
 from protogpt import training
-from protogpt.datasets import InMemoryTextDataset, TrainValDataset
+from protogpt.datasets import DatasetSplits, InMemoryTextDataset
 from protogpt.models import BigramLanguageModel
 from protogpt.tokenizer import CharacterLevelTokenizer
 from protogpt.training import TrainingLoopParams
@@ -14,7 +14,7 @@ from protogpt.training import TrainingLoopParams
 
 class ScriptParams(BaseModel):
     dataset: Path
-    device: Literal["cpu", "cuda"]
+    device: Literal["cpu", "cuda", "cuda:0", "cuda:1"]
     learning_rate: float = 1e-3
     train_split_percent: float = 0.9
 
@@ -29,14 +29,14 @@ parser = ArgParser(description="Train a smoll gpt!")
 @parser.command(singleton=True)
 def main(params: CombinedParams) -> None:
     torch.manual_seed(1337)
-
     device = torch.device(params.device)
+
     corpus = params.dataset.read_text()
     tokenizer = CharacterLevelTokenizer.create_from_corpus(corpus)
 
     # Create train and val datasets
     n_train_chars = int(len(corpus) * params.train_split_percent)
-    dataset = TrainValDataset(
+    dataset = DatasetSplits(
         train=InMemoryTextDataset(corpus[:n_train_chars], tokenizer, device),
         val=InMemoryTextDataset(corpus[n_train_chars:], tokenizer, device),
     )

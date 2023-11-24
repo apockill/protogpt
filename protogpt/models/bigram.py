@@ -23,7 +23,7 @@ class BigramLanguageModel(BaseGenerativeTextModel):
             logits = logits.view(b * t, c)
             targets = targets.view(b * t)
 
-        loss = F.cross_entropy(logits, targets)
+            loss = functional.cross_entropy(logits, targets)
         return logits, loss
 
     def generate(self, idx: torch.Tensor, max_new_tokens: int) -> torch.Tensor:
