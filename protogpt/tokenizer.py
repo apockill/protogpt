@@ -37,7 +37,7 @@ class CharacterLevelTokenizer(BaseTokenizer):
         assert len(self._mapping_to_tokens) == len(self._mapping_to_text)
 
     def decode(self, tokens: TOKENS_TYPE) -> str:
-        return "".join((self._mapping_to_text[t] for t in tokens))
+        return "".join((self._mapping_to_text[int(t)] for t in tokens))
 
     def encode(self, text: str) -> TOKENS_TYPE:
         return torch.tensor(
