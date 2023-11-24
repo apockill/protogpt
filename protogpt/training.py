@@ -2,7 +2,7 @@ import torch.optim
 from pydantic import BaseModel
 
 from protogpt.datasets import TrainValDataset
-from protogpt.models import BigramLanguageModel
+from protogpt.models import BaseGenerativeTextModel
 
 
 class TrainingLoopParams(BaseModel):
@@ -12,12 +12,11 @@ class TrainingLoopParams(BaseModel):
 
 
 def simple_training_loop(
-    model: BigramLanguageModel,
+    model: BaseGenerativeTextModel,
     dataset: TrainValDataset,
     optimizer: torch.optim.Optimizer,
     params: TrainingLoopParams,
 ) -> None:
-
     for _ in range(params.training_steps):
         # Sample a batch of data
         xb, yb = dataset.train.get_batch(params.batch_size, params.block_size)
