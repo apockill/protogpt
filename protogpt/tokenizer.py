@@ -40,7 +40,9 @@ class CharacterLevelTokenizer(BaseTokenizer):
         return "".join((self._mapping_to_text[t] for t in tokens))
 
     def encode(self, text: str) -> TOKENS_TYPE:
-        return torch.tensor([self._mapping_to_tokens[c] for c in text], dtype=torch.int)
+        return torch.tensor(
+            [self._mapping_to_tokens[c] for c in text], dtype=torch.long
+        )
 
     @classmethod
     def create_from_corpus(cls, text: str) -> "CharacterLevelTokenizer":
