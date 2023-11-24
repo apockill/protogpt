@@ -1,6 +1,10 @@
 # protogpt
 
 A for-fun GPT prototype, heavily inspired by [Andrej Karpathy's tutorial](https://www.youtube.com/watch?v=kCc8FmEb1nY), with my own spin on the architecture.
+
+The goal was to learn how to develop GPTs using clean code for easy to reproduce experimentation, but also
+for easy deployment.
+
 _________________
 
 [![PyPI version](https://badge.fury.io/py/protogpt.svg)](http://badge.fury.io/py/protogpt)

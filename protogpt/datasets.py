@@ -28,9 +28,12 @@ class BaseTextDataset(ABC):
 
 
 class InMemoryTextDataset(BaseTextDataset):
-    def __init__(self, text: str, tokenizer: BaseTokenizer):
+    def __init__(self, text: str, tokenizer: BaseTokenizer, device: torch.device):
         self._text = text
         self.tokenizer = tokenizer
+
+        # Cache the text on the target device memory
+        self._encoded_text = self.tokenizer.encode(self._text).to(device)
 
     def __len__(self) -> int:
         return len(self._text)
@@ -42,7 +45,7 @@ class InMemoryTextDataset(BaseTextDataset):
     def get_batch(
         self, batch_size: int, block_size: int
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        data = self.tokenizer.encode(self._text)
+        data = self._encoded_text
         ix = torch.randint(len(data) - block_size, (batch_size,))
         x = torch.stack([data[i : i + block_size] for i in ix])
         y = torch.stack([data[i + 1 : i + block_size + 1] for i in ix])
