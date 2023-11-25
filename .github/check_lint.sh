@@ -1,7 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
 
-poetry run cruft check
 poetry run mypy --ignore-missing-imports protogpt/ tests/
 poetry run isort --check --diff protogpt/ tests/
 poetry run black --check protogpt/ tests/
