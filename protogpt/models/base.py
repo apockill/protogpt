@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Generator
 
 import torch
 from torch import nn
@@ -25,7 +26,9 @@ class BaseGenerativeTextModel(nn.Module, ABC):
         """
 
     @abstractmethod
-    def generate(self, idx: torch.Tensor, max_new_tokens: int) -> torch.Tensor:
+    def generate(
+        self, idx: torch.Tensor, max_new_tokens: int
+    ) -> Generator[torch.Tensor, None, None]:
         """
         :param idx: A (B, T) array of indices in the current context
         :param max_new_tokens: How many tokens to produce, maximum

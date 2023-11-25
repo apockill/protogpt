@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from protogpt import training
 from protogpt.datasets import DatasetSplits, InMemoryTextDataset
-from protogpt.models import BigramLanguageModel
+from protogpt.models import ProtoGPTModel
 from protogpt.tokenizer import CharacterLevelTokenizer
 from protogpt.training import TrainingLoopParams
 
@@ -46,7 +46,7 @@ def main(params: CombinedParams) -> None:
     )
 
     # Create the model and optimizer
-    model = NewLanguageModel(
+    model = ProtoGPTModel(
         vocab_size=tokenizer.vocab_size, block_size=params.block_size, device=device
     )
     model.to(device)
@@ -58,11 +58,9 @@ def main(params: CombinedParams) -> None:
     )
 
     # Try running some stuff
-    xb, yb = dataset.val.get_batch(4, 8)
-    logits, loss = model(xb, yb)
-    generated = model.generate(xb, max_new_tokens=500)
-    generated_decoded = [tokenizer.decode(g) for g in generated]
-
+    xb, yb = dataset.val.get_batch(1)
+    for token_batch in model.generate(xb, max_new_tokens=10000):
+        print(tokenizer.decode(token_batch), end="")
 
 
 if __name__ == "__main__":

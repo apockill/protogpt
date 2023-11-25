@@ -1,3 +1,5 @@
+from typing import Generator
+
 import torch
 import torch.nn as nn
 from torch.nn import functional
@@ -27,7 +29,9 @@ class BigramLanguageModel(BaseGenerativeTextModel):
             loss = functional.cross_entropy(logits_reshaped, targets_reshaped)
         return logits, loss
 
-    def generate(self, idx: torch.Tensor, max_new_tokens: int) -> torch.Tensor:
+    def generate(
+        self, idx: torch.Tensor, max_new_tokens: int
+    ) -> Generator[torch.Tensor, None, None]:
         for _ in range(max_new_tokens):
             # Get predictions
             logits, loss = self(idx)
@@ -39,8 +43,9 @@ class BigramLanguageModel(BaseGenerativeTextModel):
             probabilities = functional.softmax(logits, dim=-1)  # (B, C)
 
             # Sample from this distribution
-            idx_next = torch.multinomial(probabilities, num_samples=1)  # (B, 1)
+            new_column = torch.multinomial(probabilities, num_samples=1)  # (B, 1)
 
-            # Append the sampled index to the running sequence
-            idx = torch.cat((idx, idx_next), dim=1)
-        return idx
+            # Shift the current context by one, and append new newly generated tokens
+            idx[:, :-1] = idx[:, 1:].clone()
+            idx[:, -1] = new_column
+            yield new_column
