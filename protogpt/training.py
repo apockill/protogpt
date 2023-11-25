@@ -7,12 +7,10 @@ from protogpt.models import BaseGenerativeTextModel
 
 
 class TrainingLoopParams(BaseModel):
-    training_steps: int
-    batch_size: int = 32
+    batch_size: int = 64
+    training_steps: int = 5000
 
-    block_size: int = 16
-    """The context length"""
-
+    # Eval params
     eval_iters: int = 200
     eval_interval: int = 500
 
@@ -29,7 +27,7 @@ def estimate_loss(
     for split in dataset:
         losses = torch.zeros(params.eval_iters)
         for k in range(params.eval_iters):
-            xb, yb = split.get_batch(params.batch_size, params.block_size)
+            xb, yb = split.get_batch(params.batch_size)
             logits, loss = model(xb, yb)
             losses[k] = loss.item()
 
@@ -55,7 +53,7 @@ def simple_training_loop(
             print(loss_report)
 
         # Sample a batch of data
-        xb, yb = dataset.train.get_batch(params.batch_size, params.block_size)
+        xb, yb = dataset.train.get_batch(params.batch_size)
 
         # Run inference the loss
         logits, loss = model(xb, yb)

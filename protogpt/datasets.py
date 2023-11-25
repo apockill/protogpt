@@ -22,21 +22,21 @@ class BaseTextDataset(ABC):
         """Return the unique characters in this dataset"""
 
     @abstractmethod
-    def get_batch(
-        self, batch_size: int, block_size: int
-    ) -> tuple[torch.Tensor, torch.Tensor]:
+    def get_batch(self, batch_size: int) -> tuple[torch.Tensor, torch.Tensor]:
         """Create a batch for training or validation
 
         :param batch_size: The size of the batch
-        :param block_size: The maximum context length of predictions
         :return: the X, Y tensors of shape (batch_size, block_size) each
         """
 
 
 class InMemoryTextDataset(BaseTextDataset):
-    def __init__(self, text: str, tokenizer: BaseTokenizer, device: torch.device):
+    def __init__(
+        self, text: str, tokenizer: BaseTokenizer, device: torch.device, block_size: int
+    ):
         self._text = text
         self.tokenizer = tokenizer
+        self.block_size = block_size
 
         # Cache the text on the target device memory
         self._encoded_text = self.tokenizer.encode(self._text).to(device)
@@ -48,13 +48,11 @@ class InMemoryTextDataset(BaseTextDataset):
     def unique_characters(self) -> set[str]:
         return set(self._text)
 
-    def get_batch(
-        self, batch_size: int, block_size: int
-    ) -> tuple[torch.Tensor, torch.Tensor]:
+    def get_batch(self, batch_size: int) -> tuple[torch.Tensor, torch.Tensor]:
         data = self._encoded_text
-        ix = torch.randint(len(data) - block_size, (batch_size,))
-        x = torch.stack([data[i : i + block_size] for i in ix])
-        y = torch.stack([data[i + 1 : i + block_size + 1] for i in ix])
+        ix = torch.randint(len(data) - self.block_size, (batch_size,))
+        x = torch.stack([data[i : i + self.block_size] for i in ix])
+        y = torch.stack([data[i + 1 : i + self.block_size + 1] for i in ix])
         return x, y
 
 
