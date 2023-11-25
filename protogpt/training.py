@@ -9,7 +9,10 @@ from protogpt.models import BaseGenerativeTextModel
 class TrainingLoopParams(BaseModel):
     training_steps: int
     batch_size: int = 32
+
     block_size: int = 16
+    """The context length"""
+
     eval_iters: int = 200
     eval_interval: int = 500
 

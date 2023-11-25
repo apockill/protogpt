@@ -20,10 +20,11 @@ class BigramLanguageModel(BaseGenerativeTextModel):
             loss = None
         else:
             b, t, c = logits.shape
-            logits = logits.view(b * t, c)
-            targets = targets.view(b * t)
 
-            loss = functional.cross_entropy(logits, targets)
+            # Reshape logits and targets so pytorch can operate on them
+            logits_reshaped = logits.view(b * t, c)
+            targets_reshaped = targets.view(b * t)
+            loss = functional.cross_entropy(logits_reshaped, targets_reshaped)
         return logits, loss
 
     def generate(self, idx: torch.Tensor, max_new_tokens: int) -> torch.Tensor:
